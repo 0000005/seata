@@ -114,6 +114,11 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -205,6 +210,8 @@
                                     <extraArgument>-verbose:gc</extraArgument>
                                     <!--netty-->
                                     <extraArgument>-Dio.netty.leakDetectionLevel=advanced</extraArgument>
+                                    <!--log-->
+                                    <extraArgument>-Dlogback.color.disable-for-bat=true</extraArgument>
                                 </extraArguments>
                             </jvmSettings>
                             <platforms>
