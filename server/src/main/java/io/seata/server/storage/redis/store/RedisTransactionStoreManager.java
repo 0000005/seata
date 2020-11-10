@@ -108,6 +108,7 @@ public class RedisTransactionStoreManager extends AbstractTransactionStoreManage
         } else {
             throw new StoreException("Unknown LogOperation:" + logOperation.name());
         }
+
     }
 
     /**
@@ -116,6 +117,7 @@ public class RedisTransactionStoreManager extends AbstractTransactionStoreManage
      * @return the boolean
      */
     private boolean insertBranchTransactionDO(BranchTransactionDO branchTransactionDO) {
+        LOGGER.info("redis:insertBranchTransactionDO, xId:"+branchTransactionDO.getXid()+" branchId:"+branchTransactionDO.getBranchId());
         String branchKey = buildBranchKey(branchTransactionDO.getBranchId());
         String branchListKey = buildBranchListKeyByXid(branchTransactionDO.getXid());
         try (Jedis jedis = JedisPooledFactory.getJedisInstance()) {
@@ -138,6 +140,7 @@ public class RedisTransactionStoreManager extends AbstractTransactionStoreManage
      * @return
      */
     private boolean deleteBranchTransactionDO(BranchTransactionDO branchTransactionDO) {
+        LOGGER.info("redis:deleteBranchTransactionDO, xId:"+branchTransactionDO.getXid()+" branchId:"+branchTransactionDO.getBranchId());
         String branchKey = buildBranchKey(branchTransactionDO.getBranchId());
         try (Jedis jedis = JedisPooledFactory.getJedisInstance()) {
             Map<String, String> branchTransactionDOMap = jedis.hgetAll(branchKey);
@@ -162,6 +165,7 @@ public class RedisTransactionStoreManager extends AbstractTransactionStoreManage
      * @return
      */
     private boolean updateBranchTransactionDO(BranchTransactionDO branchTransactionDO) {
+        LOGGER.info("redis:updateBranchTransactionDO, xId:"+branchTransactionDO.getXid()+" status:"+branchTransactionDO.getStatus() +" branchId:"+branchTransactionDO.getBranchId());
         String branchKey = buildBranchKey(branchTransactionDO.getBranchId());
         try (Jedis jedis = JedisPooledFactory.getJedisInstance()) {
             String previousBranchStatus = jedis.hget(branchKey, REDIS_KEY_BRANCH_STATUS);
@@ -184,6 +188,7 @@ public class RedisTransactionStoreManager extends AbstractTransactionStoreManage
      * @return
      */
     private boolean insertGlobalTransactionDO(GlobalTransactionDO globalTransactionDO) {
+        LOGGER.info("redis:insertGlobalTransactionDO, xId:"+globalTransactionDO.getXid());
         String globalKey = buildGlobalKeyByTransactionId(globalTransactionDO.getTransactionId());
         try (Jedis jedis = JedisPooledFactory.getJedisInstance()) {
             Date now = new Date();
@@ -209,6 +214,7 @@ public class RedisTransactionStoreManager extends AbstractTransactionStoreManage
      * @return
      */
     private boolean deleteGlobalTransactionDO(GlobalTransactionDO globalTransactionDO) {
+        LOGGER.info("redis:deleteGlobalTransactionDO, xId:"+globalTransactionDO.getXid());
         String globalKey = buildGlobalKeyByTransactionId(globalTransactionDO.getTransactionId());
         try (Jedis jedis = JedisPooledFactory.getJedisInstance()) {
             Map<String, String> globalTransactionDoMap = jedis.hgetAll(globalKey);
@@ -238,6 +244,7 @@ public class RedisTransactionStoreManager extends AbstractTransactionStoreManage
      * @return
      */
     private boolean updateGlobalTransactionDO(GlobalTransactionDO globalTransactionDO) {
+        LOGGER.info("redis:updateGlobalTransactionDO, xId:"+globalTransactionDO.getXid()+" status:"+globalTransactionDO.getStatus());
         String xid = globalTransactionDO.getXid();
         String globalKey = buildGlobalKeyByTransactionId(globalTransactionDO.getTransactionId());
         try (Jedis jedis = JedisPooledFactory.getJedisInstance()) {
@@ -247,7 +254,7 @@ public class RedisTransactionStoreManager extends AbstractTransactionStoreManage
             String previousStatus = statusAndGmtModified.get(0);
             if (StringUtils.isEmpty(previousStatus)) {
                 jedis.unwatch();
-                throw new StoreException("Global transaction is not exist, update global transaction failed.");
+                throw new StoreException("Global transaction is not exist, update global transaction failed. xId:"+globalTransactionDO.getXid());
             }
             if (previousStatus.equals(String.valueOf(globalTransactionDO.getStatus()))) {
                 jedis.unwatch();

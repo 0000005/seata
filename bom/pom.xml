@@ -619,21 +619,23 @@
 <!--                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>-->
 <!--                </repository>-->
 <!--            </distributionManagement>-->
-            <distributionManagement>
-                <snapshotRepository>
-                    <id>snapshots</id>
-                    <name>snapshots</name>
-                    <url>http://123.207.61.134:18081/jte-nexus/content/repositories/snapshots/</url>
-                </snapshotRepository>
 
-                <repository>
-                    <id>releases</id>
-                    <name>releases</name>
-                    <url>http://123.207.61.134:18081/jte-nexus/content/repositories/releases/</url>
-                </repository>
-            </distributionManagement>
 
         </profile>
     </profiles>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>snapshots</name>
+            <url>http://123.207.61.134:18081/jte-nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+
+        <repository>
+            <id>releases</id>
+            <name>releases</name>
+            <url>http://123.207.61.134:18081/jte-nexus/content/repositories/releases/</url>
+        </repository>
+    </distributionManagement>
 
 </project>

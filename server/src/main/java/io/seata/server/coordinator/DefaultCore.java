@@ -175,6 +175,7 @@ public class DefaultCore implements Core {
 
     @Override
     public boolean doGlobalCommit(GlobalSession globalSession, boolean retrying) throws TransactionException {
+        LOGGER.info("start doGlobalCommit, xid = {}.", globalSession.getXid());
         boolean success = true;
         // start committing event
         eventBus.post(new GlobalTransactionEvent(globalSession.getTransactionId(), GlobalTransactionEvent.ROLE_TC,
@@ -188,8 +189,9 @@ public class DefaultCore implements Core {
                 if (!retrying && branchSession.canBeCommittedAsync()) {
                     continue;
                 }
-
                 BranchStatus currentStatus = branchSession.getStatus();
+                LOGGER.info("before branch commit, branchSession status:{}",currentStatus.getCode());
+
                 if (currentStatus == BranchStatus.PhaseOne_Failed) {
                     globalSession.removeBranch(branchSession);
                     continue;

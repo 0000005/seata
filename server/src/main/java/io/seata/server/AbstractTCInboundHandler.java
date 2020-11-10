@@ -85,6 +85,7 @@ public abstract class AbstractTCInboundHandler extends AbstractExceptionHandler 
 
     @Override
     public GlobalCommitResponse handle(GlobalCommitRequest request, final RpcContext rpcContext) {
+        LOGGER.info("Receive GlobalCommitRequest, xId"+request.getXid());
         GlobalCommitResponse response = new GlobalCommitResponse();
         response.setGlobalStatus(GlobalStatus.Committing);
         exceptionHandleTemplate(new AbstractCallback<GlobalCommitRequest, GlobalCommitResponse>() {
